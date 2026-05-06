@@ -1,0 +1,70 @@
+:root {
+    --primary: #C62828;
+    --primary-hover: #B71C1C;
+    --background: #FFFFFF;
+    --surface: #F5F5F5;
+    --text: #1F2937;
+    --text-secondary: #6B7280;
+}
+
+/* Fundo */
+body {
+    background-color: var(--background);
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    padding: 0 !important;
+}
+
+div[data-testid="stSidebarContent"] {
+    padding: 0 !important;
+    background-color: #1F2937;
+    overflow: hidden;
+    scrollbar-gutter: unset;
+}
+
+.stButton>button {
+    /* width: 110%; */
+    /* border-radius: 25px 0px 0px 25px; */
+    border: 1px solid var(--surface);
+    background-color: aquamarine;
+    text-align: center;
+}
+.stButton>button:hover {
+    background-color: var(--primary-hover);
+    color: var(--background);
+}
+
+.botao-ativo button {
+    background-color: var(--primary-hover) !important;
+    color: white !important;
+}
+
+
+/* Testando */
+/* :has(div.PortMarker) */
+
+
+
+/* Botões */
+/* .stButton > button {
+    background-color: var(--surface);
+    color: var(--text);
+}
+
+.stButton > button:hover {
+    background-color: var(--primary-hover);
+    color: white;
+} */
+
+/* Botão ativo */
+.botao-ativo button {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+/* Título */
+.titulo {
+    color: var(--primary);
+}
