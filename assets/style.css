@@ -247,13 +247,14 @@ div[data-testid="stNumberInput"] input {
     padding: 5px 0;
 }
 
-div[data-testid="stWidgetLabel"] p,
-div[data-testid="stWidgetLabel"] label,
-div[data-testid="stMarkdownContainer"] p {
+/* Força texto dos toggles/labels a ficar sempre escuro, independente do modo do navegador — só no conteúdo principal, não na sidebar */
+section[data-testid="stMain"] div[data-testid="stWidgetLabel"] p,
+section[data-testid="stMain"] div[data-testid="stWidgetLabel"] label,
+section[data-testid="stMain"] div[data-testid="stMarkdownContainer"] p {
     color: var(--text) !important;
 }
 
-div[data-testid="stTooltipIcon"] svg {
+section[data-testid="stMain"] div[data-testid="stTooltipIcon"] svg {
     color: var(--text-secondary) !important;
 }
 
