@@ -142,16 +142,14 @@ div[data-testid="stSidebarContent"] {
 }
 
 /* Ícone de recolher/expandir a sidebar — força cor clara pra contrastar com o fundo escuro */
-[data-testid="stSidebarCollapseButton"] svg,
-[data-testid="stSidebarCollapsedControl"] svg {
+[data-testid="stSidebarCollapseButton"] [data-testid="stIconMaterial"],
+[data-testid="stSidebarCollapsedControl"] [data-testid="stIconMaterial"] {
     color: #D6DAE2 !important;
-    fill: #D6DAE2 !important;
 }
 
-[data-testid="stSidebarCollapseButton"]:hover svg,
-[data-testid="stSidebarCollapsedControl"]:hover svg {
+[data-testid="stSidebarCollapseButton"]:hover [data-testid="stIconMaterial"],
+[data-testid="stSidebarCollapsedControl"]:hover [data-testid="stIconMaterial"] {
     color: #FFFFFF !important;
-    fill: #FFFFFF !important;
 }
 
 .sidebar-footer-link:hover {
