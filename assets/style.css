@@ -141,6 +141,19 @@ div[data-testid="stSidebarContent"] {
     transition: border-color 0.15s ease, opacity 0.15s ease;
 }
 
+/* Ícone de recolher/expandir a sidebar — força cor clara pra contrastar com o fundo escuro */
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="stSidebarCollapsedControl"] svg {
+    color: #D6DAE2 !important;
+    fill: #D6DAE2 !important;
+}
+
+[data-testid="stSidebarCollapseButton"]:hover svg,
+[data-testid="stSidebarCollapsedControl"]:hover svg {
+    color: #FFFFFF !important;
+    fill: #FFFFFF !important;
+}
+
 .sidebar-footer-link:hover {
     opacity: 0.8;
     border-bottom-color: var(--primary);
