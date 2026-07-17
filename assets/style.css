@@ -28,6 +28,7 @@
 html, body, [class*="css"] {
     font-family: var(--font-body);
     color: var(--text);
+    color-scheme: light only;
 }
 
 /* Fundo geral */
@@ -244,6 +245,16 @@ div[data-testid="stNumberInput"] input {
 /* Linha zebra sutil entre itens */
 .section-card [data-testid="stHorizontalBlock"] {
     padding: 5px 0;
+}
+
+div[data-testid="stWidgetLabel"] p,
+div[data-testid="stWidgetLabel"] label,
+div[data-testid="stMarkdownContainer"] p {
+    color: var(--text) !important;
+}
+
+div[data-testid="stTooltipIcon"] svg {
+    color: var(--text-secondary) !important;
 }
 
 /* ==========================================================================
