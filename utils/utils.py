@@ -61,7 +61,7 @@ def formata_moeda(valor: float) -> str:
 ##################
 
 class ToggleNumberInput:
-    def __init__(self, label: str, key_prefix: str, default_toggle : bool = False, help_text: str = "", min_value: int = 1, max_value: int = 100, step: int = 1):
+    def __init__(self, label: str, key_prefix: str, default_toggle : bool = False, help_text: str = "", min_value: int = 1, max_value: int = 100, step: int = 1, default_value: int = None):
         self.label = label
         self.key_toggle = f"{key_prefix}_toggle"
         self.key_value = f"{key_prefix}_value"
@@ -70,6 +70,7 @@ class ToggleNumberInput:
         self.min_value = min_value
         self.max_value = max_value
         self.step = step
+        self.default_value = default_value if default_value is not None else min_value
 
     def render(self):
         col1, col2 = st.columns([13,3])
@@ -78,7 +79,7 @@ class ToggleNumberInput:
             toggle_value = st.toggle(label=self.label, value=self.default_toggle, key=self.key_toggle, help=self.help_text)
     
         with col2:
-            value = st.number_input(label=self.label, label_visibility="collapsed", min_value=self.min_value, max_value=self.max_value, step=self.step, key=self.key_value, disabled=not toggle_value)
+            value = st.number_input(label=self.label, label_visibility="collapsed", min_value=self.min_value, max_value=self.max_value, step=self.step, value=self.default_value, key=self.key_value, disabled=not toggle_value)
 
         if toggle_value:
             return value
