@@ -17,7 +17,7 @@ def limpa_texto(text : str):
 
     return text
 
-@st.cache_data
+@st.cache_data(ttl=300)  # atualiza a cada 5 minutos
 def google_sheets_ingestion(file_id:str, sheet_name:str):
     sheet_name = quote(sheet_name)
     url = f"https://docs.google.com/spreadsheets/d/{file_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
@@ -49,6 +49,12 @@ def load_css_cached(file_path: str):
 def apply_css(file_path: str):
     css = load_css_cached(file_path)
     st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
+def formata_moeda(valor: float) -> str:
+    """Formata um número float no padrão monetário brasileiro (R$ 1.234,56)."""
+    texto = f"{valor:,.2f}"
+    texto = texto.replace(",", "X").replace(".", ",").replace("X", ".")
+    return f"R$ {texto}"
 
 ##################
 # Classes

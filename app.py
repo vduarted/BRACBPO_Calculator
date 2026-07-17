@@ -1,9 +1,14 @@
 import streamlit as st
-from utils.utils import get_valores_servicos, ToggleNumberInput, apply_css
+import streamlit.components.v1 as components
+from utils.utils import get_valores_servicos, ToggleNumberInput, apply_css, formata_moeda
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Calculadora BPO | BRAC",
+    page_icon="💼",
+    layout="wide",
+)
 
-# apply_css("assets/style.css")
+apply_css("assets/style.css")
 
 valores_servicos = get_valores_servicos()
 
@@ -391,17 +396,43 @@ if "pagina" not in st.session_state:
 
 current_page = pages_list.index(st.session_state.pagina)
 
-with st.sidebar:
-    st.write("""<div class='SideBarCustom'></div>""", unsafe_allow_html=True)
-    for page in pages_list:
-        if st.button(campos_dict[page]["label"], use_container_width=True):
-            st.session_state.pagina = page
+st.markdown("""
+<div class="app-header">
+    <div class="app-header-brand">
+        <span class="app-header-logo">BRAC<span class="app-header-logo-accent">BPO</span></span>
+        <span class="app-header-tagline">Organização Financeira</span>
+    </div>
+    <div class="app-header-title">Calculadora de Proposta — BPO Financeiro</div>
+</div>
+""", unsafe_allow_html=True)
 
-st.iframe(f"""
+with st.sidebar:
+    st.markdown("<div class='sidebar-brand'>Serviços</div>", unsafe_allow_html=True)
+    for page in pages_list:
+        is_active = st.session_state.pagina == page
+        if st.button(
+            campos_dict[page]["label"],
+            use_container_width=True,
+            key=f"nav_{page}",
+            type="primary" if is_active else "secondary",
+        ):
+            st.session_state.pagina = page
+            st.rerun()
+    st.markdown(
+        """
+        <div class="sidebar-footer">
+            Desenvolvido por:
+            <a href="mailto:vduarted1994@gmail.com" class="sidebar-footer-link">Victor Diniz</a>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+components.html(f"""
 <script>
 function scroll() {{
     const el = parent.document.getElementById("{st.session_state.pagina}");
-    
+
     if (el) {{
         el.scrollIntoView({{
             behavior: "smooth",
@@ -418,21 +449,113 @@ scroll();
 
 valores = {}
 
-for page in pages_list:
-    st.markdown(f"""<div id='{page}' style="position:relative; top:-30px;""></div>""", unsafe_allow_html=True) # Tag de marca pagina
-    st.header(campos_dict[page]["label"])
+for indice, page in enumerate(pages_list, start=1):
+    st.markdown(f"<div id='{page}' class='section-anchor'></div>", unsafe_allow_html=True)  # Tag de marca pagina
 
-    for campo, valor in campos_dict[page]["items"].items():
-        item = ToggleNumberInput(
-            label=valor["label"],
-            key_prefix=campo,
-            default_toggle=valor["default_toggle"],
-            help_text=valor["help_text"],
-            min_value=valor["min_value"],
-            max_value=valor["max_value"],
-            step=valor["step"],
+    with st.container():
+        # st.markdown("<div class='section-card'>", unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="section-header">
+                <span class="section-index">{indice:02d}</span>
+                <span class="section-title">{campos_dict[page]["label"]}</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
 
-        valores[campo] = item.render() * valores_servicos.get(valor["label"])
+        subtotal_secao = 0.0
 
-st.warning(sum(valores.values()))
+        for campo, valor in campos_dict[page]["items"].items():
+            item = ToggleNumberInput(
+                label=valor["label"],
+                key_prefix=campo,
+                default_toggle=valor["default_toggle"],
+                help_text=valor["help_text"],
+                min_value=valor["min_value"],
+                max_value=valor["max_value"],
+                step=valor["step"],
+            )
+
+            valor_calculado = item.render() * valores_servicos.get(valor["label"])
+            valores[campo] = valor_calculado
+            subtotal_secao += valor_calculado
+
+        st.markdown(
+            f"""
+            <div class="subtotal-box">
+                <span class="subtotal-label">Subtotal — {campos_dict[page]["label"]}</span>
+                <span class="subtotal-value">{formata_moeda(subtotal_secao)}</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        # st.markdown("</div>", unsafe_allow_html=True)  # fecha section-card
+
+st.markdown(
+    f"""
+    <div class="total-geral-box">
+        <span class="total-geral-label">Valor Total Estimado da Proposta</span>
+        <span class="total-geral-value">{formata_moeda(sum(valores.values()))}</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+col_slider, col_comissao = st.columns([3, 1], vertical_alignment="bottom")
+
+with col_slider:
+    st.markdown(
+        """
+        <div class="margem-header">
+            <div class="margem-icon">%</div>
+            <div class="margem-text">
+                <span class="margem-eyebrow">Personalize sua Proposta</span>
+                <span class="margem-title">Sua Margem de Lucro</span>
+                <span class="margem-subtitle">
+                    Defina o percentual que será aplicado sobre o valor estimado acima
+                    para chegar ao preço final a ser cobrado do seu cliente.
+                </span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    margem_lucro = st.slider(
+        label="Margem de lucro (%)",
+        min_value=0,
+        max_value=30,
+        value=st.session_state.get("margem_lucro", 20),
+        step=1,
+        key="margem_lucro",
+        label_visibility="collapsed",
+    )
+
+valor_total_estimado = sum(valores.values())
+valor_final_cliente = valor_total_estimado / (1 - (margem_lucro / 100))
+valor_comissao = valor_final_cliente * (margem_lucro / 100)
+
+with col_comissao:
+    st.markdown(
+        f"""
+        <div class="comissao-box">
+            <span class="comissao-label">Sua Comissão</span>
+            <span class="comissao-value">{formata_moeda(valor_comissao)}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+st.markdown(
+    f"""
+    <div class="valor-final-box">
+        <span class="valor-final-label">
+            Preço Final para o seu Cliente
+            <span class="valor-final-margem">(+{margem_lucro}% de margem)</span>
+        </span>
+        <span class="valor-final-value">{formata_moeda(valor_final_cliente)}</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
